@@ -1,26 +1,56 @@
 // accueil.js
 import "./Accueil.css";
+import { useNavigate } from "react-router-dom";
 
-export default function Accueil() {
+export default function Accueil({ isLoggedIn, setIsLoggedIn }) {
+  const navigate = useNavigate();
+  
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("loggedIn");
+    setIsLoggedIn(false);
+    navigate('/accueil');
+  };
+
+  const handleDonClick = () => {
+    if (isLoggedIn) {
+      navigate('/dons');
+    } else {
+      navigate('/connexion');
+    }
   };
 
   return (
     <div className="container">
       {/* Navigation Header */}
       <header className="header">
-        <div className="header-left">
-          <div className="flag-logo">
-            <img src="d5246caa268f230b17f5803d45ede1e6.jpg" alt="Palestine" className="palestine-logo" />
+        <div className="header-left" style={{ paddingLeft: '40px' }}>
+          <div className="flag-logo" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <img 
+              src="/d5246caa268f230b17f5803d45ede1e6.jpg" 
+              alt="Palestine Flag" 
+              style={{
+                width: '45px',
+                height: '30px',
+                borderRadius: '4px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                objectFit: 'cover'
+              }}
+            />
+            <span className="logo-text" style={{ fontSize: '24px', fontWeight: '700', color: '#333' }}>GAZA</span>
           </div>
-          <span className="logo-text">GAZA</span>
         </div>
         <nav className="nav-menu">
-          <button className="nav-btn active">Accueil</button>
+          <button className="nav-btn active" onClick={() => navigate('/')}>Accueil</button>
           <button className="nav-btn">Témoignages</button>
-          <button className="nav-btn">Dons</button>
+          <button className="nav-btn" onClick={handleDonClick}>Dons</button>
           <button className="nav-btn">Administarateur</button>
+          {isLoggedIn && (
+            <button className="nav-btn logout-btn" onClick={handleLogout}>Déconnexion</button>
+          )}
         </nav>
       </header>
 
@@ -30,9 +60,13 @@ export default function Accueil() {
         <div className="hero-content">
           <h1>PLATEFORME DE SOUTIEN À GAZA</h1>
           <p>Rendez-les heureux, s'il vous plaît</p>
-          <button className="don-btn">FAIRE UN DON MAINTENANT</button>
+          <button className="don-btn" onClick={handleDonClick}>FAIRE UN DON MAINTENANT</button>
         </div>
       </section>
+
+      {/* Donation Categories Section - REMOVED */}
+
+      {/* Auth Buttons Section - REMOVED */}
 
       {/* Articles Section */}
       <section className="articles">
@@ -156,11 +190,23 @@ export default function Accueil() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="footer">
+      {/* Footer - Always show */}
+      <footer className="footer" id="footer-section">
         <div className="footer-content">
           <div className="footer-section">
-            <h3>🇵🇸 Gaza Support</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>
+              <img 
+                src="/d5246caa268f230b17f5803d45ede1e6.jpg" 
+                alt="Palestine Flag" 
+                style={{
+                  width: '40px',
+                  height: '27px',
+                  borderRadius: '4px',
+                  objectFit: 'cover'
+                }}
+              />
+              <h3 style={{ margin: 0 }}>Gaza Support</h3>
+            </div>
             <p>Association humanitaire dédiée au soutien et à la reconstruction de Gaza. Ensemble, nous bâtissons l'espoir.</p>
           </div>
 
@@ -181,8 +227,8 @@ export default function Accueil() {
           <div className="footer-section">
             <h3>Liens rapides</h3>
             <ul className="footer-links">
-              <li>→ Accueil</li>
-              <li>→ Faire un don</li>
+              <li onClick={() => navigate('/')}>→ Accueil</li>
+              <li onClick={() => navigate('/dons')}>→ Faire un don</li>
               <li>→ Témoignages</li>
               <li>→ Mentions légales</li>
               <li>→ Politique de confidentialité</li>
